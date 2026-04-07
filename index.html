@@ -1,0 +1,348 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SlipTrack — NHL Betting Tracker</title>
+  <meta name="description" content="SlipTrack helps NHL bettors track slips, props, parlays, and live outcomes with confidence." />
+  <style>
+    :root{
+      --bg:#05070d;
+      --bg-soft:#0b1020;
+      --card:#0f172a;
+      --line:#1f2a44;
+      --text:#e6edf7;
+      --muted:#93a4c4;
+      --brand:#67e8f9;
+      --brand-2:#60a5fa;
+      --ok:#34d399;
+      --warn:#fbbf24;
+      --radius:20px;
+      --shadow:0 20px 60px rgba(0,0,0,.35);
+      --max:1200px;
+    }
+
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0;background:linear-gradient(180deg,var(--bg),#060b17 45%, #05070d);color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;scroll-behavior:smooth}
+    a{color:inherit;text-decoration:none}
+    img{max-width:100%}
+
+    .container{width:min(var(--max),92vw);margin-inline:auto}
+    .grid{display:grid;gap:1.25rem}
+    .badge{display:inline-flex;align-items:center;gap:.5rem;padding:.4rem .7rem;border:1px solid #22416a;background:rgba(96,165,250,.1);border-radius:999px;color:#b9dcff;font-size:.8rem}
+    .dot{width:8px;height:8px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 6px rgba(52,211,153,.12)}
+
+    /* NAV */
+    .nav-wrap{position:sticky;top:0;z-index:40;background:rgba(5,7,13,.68);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,.06)}
+    nav{display:flex;align-items:center;justify-content:space-between;min-height:68px}
+    .logo{display:flex;align-items:center;gap:.65rem;font-weight:700}
+    .logo-mark{
+      width:30px;height:30px;border-radius:9px;
+      background:conic-gradient(from 220deg,var(--brand),var(--brand-2),#7c3aed,var(--brand));
+      box-shadow:0 10px 30px rgba(96,165,250,.35);
+    }
+    .nav-links{display:flex;gap:1rem;color:var(--muted);font-size:.92rem}
+    .nav-links a:hover{color:#dbeafe}
+    .cta{display:inline-flex;align-items:center;gap:.5rem;padding:.75rem 1rem;border-radius:12px;border:1px solid #28559a;background:linear-gradient(180deg,#1d4ed8,#1e40af);font-weight:600}
+    .cta:hover{filter:brightness(1.08)}
+
+    /* HERO */
+    .hero{padding:72px 0 52px}
+    .hero-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:2rem;align-items:center}
+    .kicker{color:#9ec5ff;font-weight:600;letter-spacing:.08em;text-transform:uppercase;font-size:.78rem}
+    h1{font-size:clamp(2rem,6vw,4rem);line-height:1.05;margin:.6rem 0 1rem}
+    .lead{color:var(--muted);font-size:1.05rem;max-width:60ch;line-height:1.7}
+    .hero-actions{display:flex;flex-wrap:wrap;gap:.85rem;margin-top:1.4rem}
+    .ghost{padding:.75rem 1rem;border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.02);color:#d1ddf2}
+    .phone{
+      border:1px solid #233455;background:linear-gradient(180deg,#0a1224,#0a0f1d);
+      border-radius:34px;padding:14px;box-shadow:var(--shadow)
+    }
+    .screen{
+      border-radius:24px;padding:18px;min-height:430px;
+      background:
+        radial-gradient(1200px 300px at 80% -20%, rgba(103,232,249,.12), transparent 60%),
+        linear-gradient(180deg,#0d1730,#0a1223)
+    }
+    .screen-card{border:1px solid #243656;background:rgba(8,14,28,.7);border-radius:14px;padding:12px;margin-top:10px}
+    .pill{display:inline-flex;padding:.2rem .5rem;border:1px solid #2f4b79;border-radius:999px;font-size:.72rem;color:#bfdbfe}
+
+    /* SECTIONS */
+    section{padding:62px 0}
+    .section-head{max-width:750px;margin-bottom:1.4rem}
+    .section-head h2{font-size:clamp(1.6rem,4.6vw,2.7rem);margin:.2rem 0 .8rem}
+    .section-head p{color:var(--muted);line-height:1.7}
+
+    .cards-3{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
+    .card{
+      border:1px solid var(--line);border-radius:var(--radius);padding:1rem 1rem 1.1rem;
+      background:linear-gradient(180deg,rgba(255,255,255,.02),rgba(255,255,255,.01));
+    }
+    .card h3{margin:.45rem 0 .5rem;font-size:1.05rem}
+    .card p{margin:0;color:var(--muted);line-height:1.6}
+    .icon{
+      width:34px;height:34px;border-radius:10px;
+      display:grid;place-items:center;background:rgba(103,232,249,.12);border:1px solid #2a496f
+    }
+
+    .audience{display:grid;grid-template-columns:repeat(2,1fr);gap:1rem}
+    .aud{padding:1.2rem;border:1px solid var(--line);border-radius:var(--radius);background:#0b1328}
+    .aud h4{margin:.2rem 0 .4rem}
+    .aud ul{margin:.6rem 0 0;padding-left:1rem;color:var(--muted);line-height:1.7}
+
+    .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:.9rem}
+    .stat{padding:1rem;border:1px solid var(--line);border-radius:16px;background:#0b1326}
+    .stat b{display:block;font-size:1.35rem}
+    .stat span{color:var(--muted);font-size:.9rem}
+
+    .timeline{border-left:2px dashed #2a3f65;padding-left:1rem;display:grid;gap:.85rem}
+    .step{padding:.8rem;border:1px solid var(--line);border-radius:14px;background:#0a1123}
+    .step small{color:#9ec5ff;text-transform:uppercase;letter-spacing:.06em}
+    .step p{margin:.35rem 0 0;color:var(--muted)}
+
+    .final-cta{
+      border:1px solid #2f4d7a;border-radius:26px;padding:1.5rem;
+      background:
+        radial-gradient(600px 180px at 20% -5%, rgba(96,165,250,.18), transparent 60%),
+        radial-gradient(600px 220px at 100% 120%, rgba(16,185,129,.15), transparent 60%),
+        #0b1328;
+      text-align:center
+    }
+    .final-cta h3{margin:.2rem 0 .6rem;font-size:clamp(1.4rem,3.7vw,2.1rem)}
+    .final-cta p{margin:0 auto 1rem;max-width:65ch;color:var(--muted)}
+
+    footer{padding:32px 0 42px;color:#8ea0c5;font-size:.9rem;text-align:center}
+
+    /* Responsive */
+    @media (max-width:1000px){
+      .hero-grid{grid-template-columns:1fr}
+      .cards-3{grid-template-columns:repeat(2,1fr)}
+      .stats{grid-template-columns:repeat(2,1fr)}
+    }
+    @media (max-width:680px){
+      .nav-links{display:none}
+      .hero{padding-top:52px}
+      .cards-3,.audience,.stats{grid-template-columns:1fr}
+      .cta,.ghost{width:100%;justify-content:center}
+      .hero-actions{display:grid;grid-template-columns:1fr}
+    }
+  </style>
+</head>
+<body>
+  <div class="nav-wrap">
+    <div class="container">
+      <nav>
+        <a href="#top" class="logo">
+          <span class="logo-mark" aria-hidden="true"></span>
+          <span>SlipTrack</span>
+        </a>
+        <div class="nav-links">
+          <a href="#features">Features</a>
+          <a href="#for-who">Who It’s For</a>
+          <a href="#how">How It Works</a>
+          <a href="#roadmap">Roadmap</a>
+        </div>
+        <a class="cta" href="#waitlist">Join Waitlist</a>
+      </nav>
+    </div>
+  </div>
+
+  <header class="hero container" id="top">
+    <div class="hero-grid">
+      <div>
+        <span class="badge"><span class="dot"></span>Built for NHL bettors tracking real slips</span>
+        <p class="kicker">Track smarter, not harder</p>
+        <h1>Your betting dashboard for every NHL slip.</h1>
+        <p class="lead">
+          SlipTrack is a mobile-first experience that helps you track single bets, parlays, and player props in one place — with live game context, clear outcomes, and a cleaner way to review your performance over time.
+        </p>
+        <div class="hero-actions">
+          <a href="#waitlist" class="cta">Get Early Access</a>
+          <a href="#features" class="ghost">Explore Features</a>
+        </div>
+      </div>
+
+      <div class="phone" aria-label="Product preview panel">
+        <div class="screen">
+          <div class="pill">Tonight • NHL LIVE</div>
+          <div class="screen-card"><strong>My Slips</strong><br/><small style="color:#93a4c4">12 active • 4 winning • 2 close</small></div>
+          <div class="screen-card"><strong>SGP Builder</strong><br/><small style="color:#93a4c4">Mix moneyline + shots + points with payout preview</small></div>
+          <div class="screen-card"><strong>Slip Import</strong><br/><small style="color:#93a4c4">Upload screenshot, auto-parse legs, confirm and track</small></div>
+          <div class="screen-card"><strong>Results</strong><br/><small style="color:#93a4c4">PnL, win/loss record, settled history</small></div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <section id="features">
+    <div class="container">
+      <div class="section-head">
+        <p class="kicker">Features</p>
+        <h2>Everything you need to track NHL betting slips with clarity.</h2>
+        <p>
+          SlipTrack combines live score context, bet lifecycle status, and slip-level organization so users can see where they stand at a glance — from pregame to final whistle.
+        </p>
+      </div>
+
+      <div class="cards-3">
+        <article class="card">
+          <div class="icon">📄</div>
+          <h3>Single, Parlay, and SGP Support</h3>
+          <p>Create and track single bets, multi-game parlays, and same-game parlays in a unified workflow.</p>
+        </article>
+        <article class="card">
+          <div class="icon">🏒</div>
+          <h3>Live NHL Context</h3>
+          <p>Track slips with live game data, player props, and game status so outcomes are never disconnected from the action.</p>
+        </article>
+        <article class="card">
+          <div class="icon">🤖</div>
+          <h3>Screenshot Slip Import</h3>
+          <p>Use AI-assisted parsing to turn sportsbook screenshots into editable, trackable slips in seconds.</p>
+        </article>
+        <article class="card">
+          <div class="icon">📊</div>
+          <h3>Real-Time Payout Awareness</h3>
+          <p>See leg-level details and payout expectations while you build and monitor bets.</p>
+        </article>
+        <article class="card">
+          <div class="icon">✅</div>
+          <h3>Status Lifecycle Tracking</h3>
+          <p>Clear status transitions from pending → live winning/losing → settled results keep every bet state understandable.</p>
+        </article>
+        <article class="card">
+          <div class="icon">🧾</div>
+          <h3>Performance History</h3>
+          <p>Review settled outcomes and P&L history to learn from trends instead of relying on memory.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="for-who">
+    <div class="container">
+      <div class="section-head">
+        <p class="kicker">Who it’s for</p>
+        <h2>Designed for bettors who care about process, not just picks.</h2>
+        <p>SlipTrack is built for NHL-focused users who place multiple bet types and want a structured way to track decisions and outcomes.</p>
+      </div>
+
+      <div class="audience">
+        <div class="aud">
+          <h4>Daily NHL Bettors</h4>
+          <ul>
+            <li>Track active slips without switching between apps.</li>
+            <li>Understand live status of team and player prop legs.</li>
+            <li>Keep results organized by ticket and date.</li>
+          </ul>
+        </div>
+        <div class="aud">
+          <h4>Parlay / SGP Builders</h4>
+          <ul>
+            <li>Create multi-leg entries with structured leg detail.</li>
+            <li>See odds context and payout preview more clearly.</li>
+            <li>Avoid losing track of long-leg combinations.</li>
+          </ul>
+        </div>
+        <div class="aud">
+          <h4>Data-Minded Sports Fans</h4>
+          <ul>
+            <li>Use bet history to identify strengths and weak spots.</li>
+            <li>Review outcomes in a consistent, less noisy UI.</li>
+            <li>Build better discipline with complete tracking.</li>
+          </ul>
+        </div>
+        <div class="aud">
+          <h4>Mobile-First Users</h4>
+          <ul>
+            <li>Built for fast interactions on phone first.</li>
+            <li>Smooth, scroll-friendly UI that scales to desktop.</li>
+            <li>PWA mindset for app-like usage patterns.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="how">
+    <div class="container">
+      <div class="section-head">
+        <p class="kicker">How it works</p>
+        <h2>From slip entry to final result in one continuous flow.</h2>
+      </div>
+
+      <div class="timeline">
+        <div class="step">
+          <small>Step 1</small>
+          <p>Add a slip manually or import a screenshot from your sportsbook.</p>
+        </div>
+        <div class="step">
+          <small>Step 2</small>
+          <p>SlipTrack maps legs, teams, players, and markets into a trackable structure.</p>
+        </div>
+        <div class="step">
+          <small>Step 3</small>
+          <p>Live game data updates your in-progress status as games unfold.</p>
+        </div>
+        <div class="step">
+          <small>Step 4</small>
+          <p>Settled results and performance history help you review outcomes over time.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="proof">
+    <div class="container">
+      <div class="section-head">
+        <p class="kicker">Why SlipTrack</p>
+        <h2>Purpose-built around NHL betting workflows.</h2>
+        <p>SlipTrack emphasizes reliability and practical bet tracking: live schedule context, prop tracking, multi-source resilience, and a clear state model for every ticket.</p>
+      </div>
+      <div class="stats">
+        <div class="stat"><b>Single + Parlay + SGP</b><span>One app flow for major bet modes</span></div>
+        <div class="stat"><b>Live Data Pipeline</b><span>Primary + fallback layers for resilience</span></div>
+        <div class="stat"><b>AI Import Path</b><span>Screenshot-to-slip assisted parsing</span></div>
+        <div class="stat"><b>Result-Centric Design</b><span>Track to settled outcomes and P&L</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="roadmap">
+    <div class="container">
+      <div class="section-head">
+        <p class="kicker">Roadmap</p>
+        <h2>What’s next for the platform.</h2>
+        <p>Current direction includes continued reliability hardening, quality gates, and broader product readiness for growth.</p>
+      </div>
+      <div class="cards-3">
+        <article class="card"><h3>Reliability</h3><p>Harden live tracking and settlement pathways for consistent day-to-day usage.</p></article>
+        <article class="card"><h3>Quality</h3><p>Expand test and monitoring coverage to catch issues before users do.</p></article>
+        <article class="card"><h3>Platform Expansion</h3><p>Prepare app architecture for broader device and distribution support.</p></article>
+      </div>
+    </div>
+  </section>
+
+  <section id="waitlist">
+    <div class="container">
+      <div class="final-cta">
+        <p class="kicker">Early Access</p>
+        <h3>Be first to try SlipTrack.</h3>
+        <p>Join the waitlist to get launch updates, beta access, and product milestones as SlipTrack moves toward public release.</p>
+        <div class="hero-actions" style="justify-content:center">
+          <a class="cta" href="mailto:hello@sliptrack.app?subject=SlipTrack%20Early%20Access">Join Waitlist</a>
+          <a class="ghost" href="#top">Back to Top</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    © <span id="y"></span> SlipTrack • Built for NHL betting trackers.
+  </footer>
+
+  <script>
+    document.getElementById('y').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>

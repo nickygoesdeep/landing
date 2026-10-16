@@ -1,0 +1,6 @@
+{
+  "rewrites": [
+    { "source": "/terms", "destination": "https://sliptrack.vercel.app/terms.html" },
+    { "source": "/privacy", "destination": "https://sliptrack.vercel.app/privacy.html" }
+  ]
+}
